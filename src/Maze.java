@@ -78,7 +78,7 @@ public class Maze extends JPanel{
 	}
 	
 	public void setFPS(int FPS){
-		DELAY = 1000/FPS;
+		DELAY = (int)1000.0/FPS;
 		timer.setDelay(DELAY);
 	}
 	

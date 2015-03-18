@@ -27,6 +27,6 @@ public class Main {
 		frame.setVisible(true);
 		
 		maze.begin();
-		maze.setFPS(60);
+		maze.setFPS(2);
 	}
 }

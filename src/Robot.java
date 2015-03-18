@@ -7,6 +7,7 @@ public class Robot extends JPanel{
 	int X;
 	int Y;
 	int count = 0;
+	int cdir = 0;
 	String ID = this.toString();
 	Maze maze;
 
@@ -63,8 +64,10 @@ public class Robot extends JPanel{
 	}
 	
 	private void logic(){
-		String[] dir = new String[]{"up","down","left","right"};
-		this.move( dir[(int)(Math.random()*4)]);
+//		String[] dir = new String[]{"up","down","left","right"};
+//		this.move( dir[(int)(Math.random()*4)]);
+
+		CoolOne();
 		count++;
 	}
 	
@@ -74,6 +77,18 @@ public class Robot extends JPanel{
 		
 	}
 	
+	private void CoolOne(){
+		String[] dir = new String[]{"right", "up", "left", "down"};
+		int ln = dir.length;
+
+		if( this.canMove(dir[(this.cdir+1)%ln]) )
+		    this.cdir = (this.cdir+1)%ln;
+		else if( !this.canMove(dir[this.cdir]) )
+		    this.cdir = (this.cdir+ln-1)%ln;
+
+		this.move(dir[this.cdir]);
+
+	}
 	
 	
 	
