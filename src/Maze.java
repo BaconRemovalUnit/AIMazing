@@ -86,7 +86,6 @@ public class Maze extends JPanel{
 		this.bot.start();
 	}
 
-
 	public void placeBot(int x, int y) {
 		if(maze[x][y]!=0)
 			System.err.println("Can't place bot at "+x+" "+y+"!");

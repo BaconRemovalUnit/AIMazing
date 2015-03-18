@@ -3,8 +3,10 @@ import javax.swing.JPanel;
 public class Robot extends JPanel{
 
 	boolean Activated = true;
+	boolean trigger = true;
 	int X;
 	int Y;
+	int count = 0;
 	String ID = this.toString();
 	Maze maze;
 
@@ -29,8 +31,11 @@ public class Robot extends JPanel{
 		this.maze.placeBot(X,Y);
 		if(Activated)
 		logic();
-		else
-		System.out.println("Goal!");
+		else if(trigger)
+		{
+		System.out.println(count);
+		trigger = false;
+		}
 	}
 	
 	public boolean canMove(String direction){
@@ -60,6 +65,30 @@ public class Robot extends JPanel{
 	private void logic(){
 		String[] dir = new String[]{"up","down","left","right"};
 		this.move( dir[(int)(Math.random()*4)]);
+		count++;
+	}
+	
+	
+	
+	private void DFS(){
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
