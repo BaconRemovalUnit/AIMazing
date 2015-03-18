@@ -1,10 +1,5 @@
 import javax.swing.JPanel;
 
-
-
-
-
-
 public class Robot extends JPanel{
 
 	boolean Activated = true;
@@ -29,29 +24,29 @@ public class Robot extends JPanel{
     	Activated = true;
     }
 
-	public void update() throws InterruptedException, RobotBlockedException {
+	public void update() throws InterruptedException {
 		if(!this.maze.hasRobot)
 		this.maze.placeBot(X,Y);
+		if(Activated)
 		logic();
+		else
+		System.out.println("Goal!");
 	}
 	
-	public boolean canMoveLeft(){
-	 return maze.blockEmpty(X-1,Y);
-	}
-	
-	public boolean canMoveRight(){
-		 return maze.blockEmpty(X+1,Y);
+	public boolean canMove(String direction){
+		String dir = direction.toUpperCase();
+		boolean ans;
+		switch(dir){
+		case "UP": 		ans = this.maze.blockEmpty(X, Y-1);  break;
+		case "DOWN": 	ans = this.maze.blockEmpty(X, Y+1);  break;
+		case "RIGHT":  	ans = this.maze.blockEmpty(X+1, Y);  break;
+		case "LEFT":  	ans = this.maze.blockEmpty(X-1, Y);  break;
+		default: throw new IllegalArgumentException();
 		}
-	
-	public boolean canMoveUp(){
-		 return maze.blockEmpty(X,Y-1);
-		}
-	
-	public boolean canMoveDown(){
-		 return maze.blockEmpty(X,Y+1);
+		return ans;
 		}
 
-	public void move(String direction) throws RobotBlockedException{
+	public void move(String direction){
 		String dir = direction.toUpperCase();
 		switch(dir){
 		case "UP": 		this.maze.moveBot(0, -1);  break;
@@ -61,10 +56,10 @@ public class Robot extends JPanel{
 		default: throw new IllegalArgumentException();
 		}
 	}
-
-
-	private void logic() throws RobotBlockedException {
-		this.move("RIGHT");
+	
+	private void logic(){
+		String[] dir = new String[]{"up","down","left","right"};
+		this.move( dir[(int)(Math.random()*4)]);
 		
 	}
 }

@@ -11,7 +11,7 @@ public class Maze extends JPanel{
 	//first[] decides X, second[] decides Y
 	boolean hasRobot;
 	int[][] maze;
-	int DELAY = 1000;
+	int DELAY = 200;
 	int X;
 	int Y;
 	int u;
@@ -19,6 +19,8 @@ public class Maze extends JPanel{
 	int Height;
 	int botX;
 	int botY;
+	int goalX;
+	int goalY;
 	
 	private Timer timer;
 	Robot bot = new Robot();
@@ -39,33 +41,13 @@ public class Maze extends JPanel{
 			for(int j=0; j<grid.length; j++){
 				if(grid[j][i]==0)
 					maze[i][j] = 0;
+				else if(grid[j][i]==9)
+					maze[i][j] = 9;
 				else
 					maze[i][j] = 1;
 			}
 		}
 		
-		bot.maze = this;
-		botX = bot.X;
-		botY = bot.Y;
-		timer = new Timer(DELAY, new BoardListener());
-		timer.start();
-	}
-	
-	Maze(boolean[][] grid, int u){
-		this.u = u;
-		this.X = grid.length;
-		this.Y = grid[0].length;
-		this.Width = X*u;
-		this.Height = Y*u;
-		maze = new int[grid.length][grid[0].length];
-		for(int i=0; i< grid.length; i++){
-			for(int j=0; j<grid[0].length; j++){
-				if(grid[i][j])
-					maze[i][j] = 1;
-				else
-					maze[i][j] = 0;
-			}
-		}
 		bot.maze = this;
 		botX = bot.X;
 		botY = bot.Y;
@@ -83,12 +65,21 @@ public class Maze extends JPanel{
 						g.setColor(Color.WHITE);
 						g.fillRect(i*u, j*u, u, u);
 					}
-					else if(maze[i][j]==2){
+					else if(maze[i][j]==9){
 						g.setColor(Color.GREEN);
+						g.fillRect(i*u, j*u, u, u);
+					}
+					else if(maze[i][j]==2){
+						g.setColor(Color.RED);
 						g.fillRect(i*u, j*u, u, u);
 					}
 			}
 		}
+	}
+	
+	public void setFPS(int FPS){
+		DELAY = 1000/FPS;
+		timer.setDelay(DELAY);
 	}
 	
 	public void begin(){
@@ -96,11 +87,10 @@ public class Maze extends JPanel{
 	}
 
 
-	public void placeBot(int x, int y) throws RobotBlockedException{
+	public void placeBot(int x, int y) {
 		if(maze[x][y]!=0)
-			throw new RobotBlockedException();
-		else
-		{
+			System.err.println("Can't place bot at "+x+" "+y+"!");
+		else{
 			maze[x][y] = 2;
 			hasRobot = true;
 		}	
@@ -108,21 +98,25 @@ public class Maze extends JPanel{
 	}
 
 	public boolean blockEmpty(int x, int y) {
-		if(x<0 || y<0)
+		if(x<0 || y<0 || x==X || y==Y)
 		return false;
 		else
-		return (maze[x][y]==0);
+		return (maze[x][y]==0||maze[x][y]==9);
 	}
 
-	public void moveBot(int dX, int dY) throws RobotBlockedException{
+	public void moveBot(int dX, int dY){
 		if(blockEmpty((botX+dX),(botY+dY))){
+			if(maze[botX+dX][botY+dY]==9)
+				this.bot.Activated = false;
 			maze[botX][botY] = 0;
 			maze[botX+dX][botY+dY] = 2;
+			bot.X = botX+dX;
+			bot.Y = botY+dY;
 			this.botX = botX+dX;
 			this.botY = botY+dY;
 		}
 		else
-			throw new RobotBlockedException();
+			System.err.println("Can't place bot at "+( botX+dX)+" "+(botY+dY)+"!");
 	}
 	
 	private class BoardListener implements ActionListener
@@ -131,7 +125,7 @@ public class Maze extends JPanel{
 		{	
 			try {
 				bot.update();
-			} catch (InterruptedException | RobotBlockedException e1) {
+			} catch (InterruptedException  e1) {
 				e1.printStackTrace();
 			}
 			repaint();

@@ -12,9 +12,11 @@ public class Main {
 		int y = 300;
 		int unit = 10;
 		int[][] input = {
-				{0,0,0,0,1,1},
-				{1,0,0,0,0,0},
-				{1,1,1,1,1,0}};
+				{0,0,0,0,0},
+				{1,0,0,1,0},
+				{1,0,1,0,0},
+				{1,0,1,9,0},
+				{0,1,0,0,1}};
 		
 		Maze maze = new Maze(input, unit);
 		JFrame frame = new JFrame("Maze");
@@ -23,6 +25,8 @@ public class Main {
 		frame.setBackground(Color.BLACK);
 		frame.setSize(x,y);
 		frame.setVisible(true);
+		
 		maze.begin();
+		maze.setFPS(60);
 	}
 }
