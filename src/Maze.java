@@ -32,8 +32,8 @@ public class Maze extends JPanel{
 	Maze(int[][] grid, int u){
 		
 		this.u = u;
-		this.X = grid.length;
-		this.Y = grid[0].length;
+		this.Y = grid.length;
+		this.X = grid[0].length;
 		this.Width = X*u;
 		this.Height = Y*u;
 		maze = new int[grid[0].length][grid.length];
