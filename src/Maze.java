@@ -2,6 +2,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -17,12 +20,12 @@ public class Maze extends JPanel{
 	int u;
 	int Width;
 	int Height;
-	int botX;
-	int botY;
 	int goalX;
 	int goalY;
+	int pathLength = 20;
 	
 	private Timer timer;
+	ArrayList<int[]> path = new ArrayList<int[]>();
 	Robot bot = new Robot();
 	
 	
@@ -47,10 +50,7 @@ public class Maze extends JPanel{
 					maze[i][j] = 1;
 			}
 		}
-		
 		bot.maze = this;
-		botX = bot.X;
-		botY = bot.Y;
 		timer = new Timer(DELAY, new BoardListener());
 		timer.start();
 	}
@@ -75,10 +75,17 @@ public class Maze extends JPanel{
 					}
 			}
 		}
+		//draw path
+		for(int[] cord: path){
+			if(!(cord[0]==bot.X&&cord[1]==bot.Y)){
+			g.setColor(Color.LIGHT_GRAY);
+			g.fillRect(cord[0]*u, cord[1]*u, u, u);
+			}
+		}
 	}
 	
-	public void setFPS(int FPS){
-		DELAY = (int)1000.0/FPS;
+	public void setFPS(double FPS){
+		DELAY = (int) (1000.0/FPS);
 		timer.setDelay(DELAY);
 	}
 	
@@ -91,9 +98,10 @@ public class Maze extends JPanel{
 			System.err.println("Can't place bot at "+x+" "+y+"!");
 		else{
 			maze[x][y] = 2;
+			this.bot.X = x;
+			this.bot.Y = y;
 			hasRobot = true;
-		}	
-	
+		}
 	}
 
 	public boolean blockEmpty(int x, int y) {
@@ -104,26 +112,27 @@ public class Maze extends JPanel{
 	}
 
 	public void moveBot(int dX, int dY){
-		if(blockEmpty((botX+dX),(botY+dY))){
-			if(maze[botX+dX][botY+dY]==9)
+		if(blockEmpty((bot.X+dX),(bot.Y+dY))){
+			if(maze[bot.X+dX][bot.Y+dY]==9)
 				this.bot.Activated = false;
-			maze[botX][botY] = 0;
-			maze[botX+dX][botY+dY] = 2;
-			bot.X = botX+dX;
-			bot.Y = botY+dY;
-			this.botX = botX+dX;
-			this.botY = botY+dY;
+			
+			maze[bot.X][bot.Y] = 0;
+			maze[bot.X+dX][bot.Y+dY] = 2;
+			bot.X = bot.X+dX;
+			bot.Y = bot.Y+dY;
+			path.add(new int[]{bot.X,bot.Y});
 		}
 		else
-			System.err.println("Can't place bot at "+( botX+dX)+" "+(botY+dY)+"!");
+			System.err.println("Can't move bot to "+( bot.X+dX)+" "+(bot.Y+dY)+"!");
 	}
 	
-	private class BoardListener implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e) 
-		{	
+	private class BoardListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {	
 			try {
 				bot.update();
+				if(path.size()>pathLength){
+					 path.remove(0);
+				}
 			} catch (InterruptedException  e1) {
 				e1.printStackTrace();
 			}
