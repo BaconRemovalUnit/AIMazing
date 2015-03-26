@@ -1,3 +1,6 @@
+import java.awt.Point;
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
 
 public class Robot extends JPanel{
@@ -10,9 +13,11 @@ public class Robot extends JPanel{
 	int cdir = 0;
 	String ID = this.toString();
 	Maze maze;
-
+	ArrayList<Point> tree = new ArrayList<Point>();
+	ArrayList<Point> trash = new ArrayList<Point>();
 	
 	Robot(){
+		
 		this.X = 0;
 		this.Y = 0;
 	}
@@ -24,6 +29,7 @@ public class Robot extends JPanel{
 	}
 	
     public void start() {
+ 
     	Activated = true;
     }
 
@@ -67,43 +73,58 @@ public class Robot extends JPanel{
 //		String[] dir = new String[]{"up","down","left","right"};
 //		this.move( dir[(int)(Math.random()*4)]);
 
-		CoolOne();
+		DFS();
 		count++;
 	}
 	
 	
 	
 	private void DFS(){
-		
+	Point v = new Point(0,0);
+	tree.add(v);
+	if(!tree.isEmpty()){
+		 v = tree.remove(tree.size()-1);
+			 this.maze.moveBot(v.x, v.y);
+			 trash.add(v);
+			ArrayList<Point> list = getNeighbour();
+		 
 	}
 	
+	}
+	
+	private ArrayList<Point> getNeighbour() {
+		ArrayList<Point> list = new ArrayList<Point>();
+		if(this.canMove("UP")){
+			checkValid(new Point(this.X,this.Y-1));
+			
+		 list.add(new Node())
+		}
+				
+		// TODO Auto-generated method stub
+		
+	}
+
+	private String convert(String dir) {
+		switch(dir){
+		case "U": return "UP";
+		case "D": return "DOWN";
+		case "L": return "LEFT";
+		case "R": return "RIGHT";
+		default: return "YOUR MOTHER";
+		}
+	}
+
 	private void CoolOne(){
 		String[] dir = new String[]{"right", "up", "left", "down"};
 		int ln = dir.length;
-
 		if( this.canMove(dir[(this.cdir+1)%ln]) )
 		    this.cdir = (this.cdir+1)%ln;
 		else if( !this.canMove(dir[this.cdir]) )
 		    this.cdir = (this.cdir+ln-1)%ln;
-
 		this.move(dir[this.cdir]);
 
 	}
+
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
